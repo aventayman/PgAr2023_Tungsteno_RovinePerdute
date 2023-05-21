@@ -34,4 +34,15 @@ public class Node {
     public int getHeight() {
         return height;
     }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", xCoordinate=" + xCoordinate +
+                ", yCoordinate=" + yCoordinate +
+                ", height=" + height +
+                '}';
+    }
 }
