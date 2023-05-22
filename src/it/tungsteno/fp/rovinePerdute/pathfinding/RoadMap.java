@@ -15,10 +15,12 @@ public class RoadMap {
 
     // indice -> indici
     private final Map<Integer, List<Integer>> citiesConnections;
+    private final int citiesAmount;
 
-    public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections) {
+    public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections, int citiesAmount) {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
+        this.citiesAmount = citiesAmount;
     }
 
     public Map<Integer, Node> getCities() {
@@ -27,5 +29,9 @@ public class RoadMap {
 
     public Map<Integer, List<Integer>> getCitiesConnections() {
         return citiesConnections;
+    }
+
+    public int getCitiesAmount() {
+        return citiesAmount;
     }
 }

@@ -145,7 +145,7 @@ public class Reader {
                 nodeXmlReader.next();
         }
 
-        return new RoadMap(nodesMap, nodeRoutesMap);
+        return new RoadMap(nodesMap, nodeRoutesMap, nodesMap.size());
     }
 
 }
