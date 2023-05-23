@@ -16,11 +16,15 @@ public class RoadMap {
     private final Map<Integer, List<Integer>> citiesConnections;
     private List<List<Edge>> adjacencyList;
 
+    private double gasTonatiuh;
+
+    private double gasMetztli;
+
     public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections, int citiesAmount) {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
         this.adjacencyList = createAdjacencyList();
-    }
+    }   
 
     public Map<Integer, Node> getCities() {
         return cities;
@@ -66,12 +70,24 @@ public class RoadMap {
         return null;
     }
 
+    public double getGasTonatiuh() {
+        return gasTonatiuh;
+    }
+
+    public double getGasMetztli() {
+        return gasMetztli;
+    }
+
     public List<List<Edge>> getAdjacencyList() {
         return adjacencyList;
     }
 
-    public double findShortestPath() {
+    public Node[] findShortestPathForTonatiuh() {
         adjacencyList = createAdjacencyList();
-        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), true);
+        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), false, gasTonatiuh);
+    }
+    public Node[] findShortestPathForMetztli() {
+        adjacencyList = createAdjacencyList();
+        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), true, gasMetztli);
     }
 }

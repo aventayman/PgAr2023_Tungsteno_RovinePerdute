@@ -1,6 +1,7 @@
 package it.tungsteno.fp.rovinePerdute;
 
 import it.tungsteno.fp.rovinePerdute.parsing.Reader;
+import it.tungsteno.fp.rovinePerdute.parsing.Writer;
 import it.tungsteno.fp.rovinePerdute.pathfinding.RoadMap;
 
 import javax.xml.stream.XMLStreamException;
@@ -13,6 +14,9 @@ public class Main {
             System.out.println(map.getCitiesConnections().get(key));
         }
 
-        System.out.println(map.findShortestPath());
+       // System.out.println(map.findShortestPathForMetztli());
+       // System.out.println(map.findShortestPathForTonatiuh());
+        Writer.Output(map.findShortestPathForTonatiuh(), map.findShortestPathForMetztli(),
+                map.getGasTonatiuh(), map.getGasMetztli());
     }
 }

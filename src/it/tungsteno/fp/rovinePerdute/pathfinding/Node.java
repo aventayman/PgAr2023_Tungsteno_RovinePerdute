@@ -51,7 +51,8 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                ", name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name +
                 ", xCoordinate=" + xCoordinate +
                 ", yCoordinate=" + yCoordinate +
                 ", height=" + height +

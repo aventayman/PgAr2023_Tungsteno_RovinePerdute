@@ -17,7 +17,7 @@ public class ShortestPath {
                 }
             };
 
-    public static double dijkstra(List<List<Edge>> adjacencyList, Node start, Node destination, boolean withHeight) {
+    public static Node[] dijkstra(List<List<Edge>> adjacencyList, Node start, Node destination, boolean withHeight, double gasUsed) {
         int citiesAmount = adjacencyList.size();
 
         //Array di minima distanza dal node di start
@@ -46,11 +46,14 @@ public class ShortestPath {
                 if (visited[edge.getDestinationNode().getId()]) continue;
 
                 double newDist;
-                if (withHeight)
+                if (withHeight) {
                     newDist = dist[edge.getStartNode().getId()] + edge.getHeightCost();
-                else
+                    gasUsed = newDist;
+                }
+                else {
                     newDist = dist[edge.getStartNode().getId()] + edge.getLinearCost();
-
+                    gasUsed = newDist;
+                }
                 if (newDist < dist[edge.getDestinationNode().getId()]) {
                     prev[edge.getDestinationNode().getId()] = edge.getStartNode();
                     dist[edge.getDestinationNode().getId()] = newDist;
@@ -58,10 +61,12 @@ public class ShortestPath {
                     priorityQueue.offer(edge.getDestinationNode());
                 }
             }
-            if (node.getId() == destination.getId()) return dist[destination.getId()];
+            //if (node.getId() == destination.getId()) return dist[destination.getId()];
+            if (node.getId() == destination.getId()) return prev;
         }
 
-        return Double.POSITIVE_INFINITY;
+        //return Double.POSITIVE_INFINITY;
+        return null;
     }
 
 }
