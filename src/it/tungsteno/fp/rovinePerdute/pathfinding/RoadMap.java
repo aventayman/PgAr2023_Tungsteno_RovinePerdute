@@ -1,7 +1,6 @@
 package it.tungsteno.fp.rovinePerdute.pathfinding;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Classe che contiene una mappa che collega ogni nodo (città) al suo indice e un'altra che collega un integer,
@@ -15,12 +14,12 @@ public class RoadMap {
 
     // indice -> indici
     private final Map<Integer, List<Integer>> citiesConnections;
-    private final int citiesAmount;
+    private List<List<Edge>> adjacencyList;
 
     public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections, int citiesAmount) {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
-        this.citiesAmount = citiesAmount;
+        this.adjacencyList = createAdjacencyList();
     }
 
     public Map<Integer, Node> getCities() {
@@ -32,6 +31,27 @@ public class RoadMap {
     }
 
     public int getCitiesAmount() {
-        return citiesAmount;
+        return cities.size();
+    }
+
+    private List<List<Edge>> createAdjacencyList() {
+        List<List<Edge>> adjacencyList = new ArrayList<>();
+        for (int i = 0; i < cities.size(); i++) {
+            List<Edge> edgeList = new LinkedList<>();
+            for (int j = 0; j < citiesConnections.get(i).size(); j++) {
+                edgeList.add(new Edge(getNodeById(i), getNodeById(citiesConnections.get(i).get(j))));
+            }
+            adjacencyList.add(edgeList);
+        }
+
+        return adjacencyList;
+    }
+
+    private Node getNodeById(int id) {
+        return cities.get(id);
+    }
+
+    public List<List<Edge>> getAdjacencyList() {
+        return adjacencyList;
     }
 }

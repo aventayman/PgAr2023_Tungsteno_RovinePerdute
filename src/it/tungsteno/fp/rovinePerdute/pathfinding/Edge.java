@@ -1,13 +1,30 @@
 package it.tungsteno.fp.rovinePerdute.pathfinding;
 
 public class Edge {
+    private Node startNode, destinationNode;
+    private double heightCost, linearCost;
 
-    private int destinationId;
-    private double cost;
+    public Edge(Node startNode, Node destinationNode) {
+        this.startNode = startNode;
+        this.destinationNode = destinationNode;
+        this.heightCost = Math.abs(startNode.getHeight() - destinationNode.getHeight());
+        this.linearCost = Math.sqrt(Math.pow(startNode.getxCoordinate() - destinationNode.getxCoordinate(), 2) +
+                Math.pow(startNode.getyCoordinate() - destinationNode.getyCoordinate(), 2));
+    }
 
-    public Edge(int destinationId, int xCoordinate, int y) {
-        this.destinationId = destinationId;
+    public Node getStartNode() {
+        return startNode;
+    }
 
-        this.cost
+    public Node getDestinationNode() {
+        return destinationNode;
+    }
+
+    public double getHeightCost() {
+        return heightCost;
+    }
+
+    public double getLinearCost() {
+        return linearCost;
     }
 }
