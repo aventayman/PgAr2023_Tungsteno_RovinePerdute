@@ -12,7 +12,7 @@ public class RoadMap {
     // indice -> nodo
     private final Map<Integer, Node> cities;
 
-    // indice -> indici
+    // indice -> lista di indici collegati
     private final Map<Integer, List<Integer>> citiesConnections;
     private List<List<Edge>> adjacencyList;
 
@@ -51,7 +51,27 @@ public class RoadMap {
         return cities.get(id);
     }
 
+    private Node getCampoBase() {
+        for (int id : cities.keySet()) {
+            if (cities.get(id).getName().equalsIgnoreCase("campo base"))
+                return cities.get(id);
+        }
+        return null;
+    }
+    private Node getRovinePerdute() {
+        for (int id : cities.keySet()) {
+            if (cities.get(id).getName().equalsIgnoreCase("rovine perdute"))
+                return cities.get(id);
+        }
+        return null;
+    }
+
     public List<List<Edge>> getAdjacencyList() {
         return adjacencyList;
+    }
+
+    public double findShortestPath() {
+        adjacencyList = createAdjacencyList();
+        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), true);
     }
 }

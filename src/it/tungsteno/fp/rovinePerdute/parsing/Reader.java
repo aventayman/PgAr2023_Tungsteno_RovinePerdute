@@ -119,7 +119,7 @@ public class Reader {
                             int height = Integer.parseInt(nodeXmlReader.getAttributeValue(4));
 
                             //Una volta creato il nuovo nodo, lo aggiungo alla nodesMap, assieme al suo id
-                            Node node = new Node(name, xCoordinate, yCoordinate, height);
+                            Node node = new Node(currentId, name, xCoordinate, yCoordinate, height);
                             nodesMap.put(currentId, node);
                         }
                         //Nel caso sia uno start element con tag "link", devo aggiungere il collegamento al nodo

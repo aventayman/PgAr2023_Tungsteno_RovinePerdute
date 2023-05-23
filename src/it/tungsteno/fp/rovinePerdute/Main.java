@@ -12,5 +12,7 @@ public class Main {
             System.out.println(map.getCities().get(key));
             System.out.println(map.getCitiesConnections().get(key));
         }
+
+        System.out.println(map.findShortestPath());
     }
 }
