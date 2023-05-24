@@ -12,11 +12,26 @@ public class ShortestPath {
     // Mappa che associa a ogni indice la minor distanza finora trovata per raggiungerlo
     private static Map<Integer, Double> minDistanceMap;
 
+    private static Map<Integer, Double> distanceFromRuinsMap;
+
     /**
      * Comparatore necessario alla priorityQueue al fine di scegliere quale nodo scegliere per continuare
-     * a implementare l'algoritmo, sceglierà sempre quello con il valore più basso, cioè il più promettente
+     * a implementare l'algoritmo, sceglierà sempre quello con il valore più basso tenendo però anche conto del fatto
+     * che i nodi più vicini alle rovine perdute sono più promettenti
      */
-    private static final Comparator<Integer> comparator =
+    private static final Comparator<Integer> comparatorAStar =
+            (index1, index2) -> {
+                if (Math.abs((minDistanceMap.get(index1) + distanceFromRuinsMap.get(index1)) -
+                        (minDistanceMap.get(index2) + distanceFromRuinsMap.get(index2))) < EPS) return 0;
+                return ((minDistanceMap.get(index1) + distanceFromRuinsMap.get(index1)) -
+                        (minDistanceMap.get(index2) + distanceFromRuinsMap.get(index2))) > 0 ? +1 : -1;
+            };
+
+    /**
+    * Comparatore necessario alla priorityQueue al fine di scegliere quale nodo scegliere per continuare
+    * a implementare l'algoritmo, sceglierà sempre quello con il valore più basso, cioè il più promettente
+    */
+    private static final Comparator<Integer> comparatorWithoutOptimization =
             (index1, index2) -> {
                 if (Math.abs(minDistanceMap.get(index1) - minDistanceMap.get(index2)) < EPS) return 0;
                 return (minDistanceMap.get(index1) - minDistanceMap.get(index2)) > 0 ? +1 : -1;
@@ -74,6 +89,13 @@ public class ShortestPath {
         // che l'algoritmo viene richiamato si abbiano delle nuove mappe
         minDistanceMap = new HashMap<>();
         previousNodeMap = new HashMap<>();
+        distanceFromRuinsMap = new HashMap<>();
+
+        for (Node node : map.getCities().values()) {
+            distanceFromRuinsMap.put(node.getId(),
+                    Math.sqrt(Math.pow(node.getxCoordinate() - map.getRovinePerdute().getxCoordinate(), 2) +
+                    Math.pow(node.getyCoordinate() - map.getRovinePerdute().getyCoordinate(), 2)));
+        }
 
         // Array di minima distanza dal node di start
         var dist = new double[citiesAmount];
@@ -86,7 +108,7 @@ public class ShortestPath {
 
         // Priority queue dove vengono inseriti i nodi da processare, verranno processati in ordine di convenienza,
         // cioè verrà scelto ogni volta il nodo che ha distanza minore dallo start.
-        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(2 * citiesAmount, comparator);
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(2 * citiesAmount, comparatorAStar);
         // Inserisco inizialmente il nodo di start all'interno della priority queue
         priorityQueue.offer(start.getId());
 
@@ -123,25 +145,21 @@ public class ShortestPath {
                     // Aggiungo l'id del nodo di arrivo come key e il nodo di partenza come value in previousNodeMap
                     previousNodeMap.put(edge.getDestinationNode().getId(), edge.getStartNode());
                     // Aggiorno la distanza migliore nel array dist
-                    dist[edge.getDestinationNode().getId()] = newDist + distanceFactor(edge.getDestinationNode() , map.getRovinePerdute());
+                    dist[edge.getDestinationNode().getId()] = newDist;
                     // Aggiungo o aggiorno la minima distanza finora trovata nella minDistanceMap
-                    minDistanceMap.put(edge.getDestinationNode().getId(), newDist
-                            + distanceFactor(edge.getDestinationNode() , map.getRovinePerdute())
-                );
+                    minDistanceMap.put(edge.getDestinationNode().getId(), newDist);
                     // Inserisco l'id della destinazione nella priority queue
                     priorityQueue.offer(edge.getDestinationNode().getId());
                 }
             }
             // Quando abbiamo visitato tutti i nodi collegati al nodo di arrivo sappiamo di per certo che
             // possiamo ritornare la distanza minima del nodo di arrivo perché non ci sarà distanza migliore di quella
-            if (node.getId() == destination.getId()) return dist[destination.getId()];
+            if (node.getId() == destination.getId()) {
+                return dist[destination.getId()];
+            }
         }
 
         // Il nodo di arrivo è irraggiungibile
         return Double.POSITIVE_INFINITY;
-    }
-    public static double distanceFactor(Node start , Node destination) {
-        return Math.sqrt(Math.pow(start.getxCoordinate() - destination.getxCoordinate(), 2) +
-                Math.pow(start.getyCoordinate() - destination.getyCoordinate(), 2));
     }
 }

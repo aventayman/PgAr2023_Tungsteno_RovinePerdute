@@ -2,7 +2,7 @@ package it.tungsteno.fp.rovinePerdute.pathfinding;
 
 public class Edge {
     private final Node startNode, destinationNode;
-    private double heightCost, linearCost;
+    private final double heightCost, linearCost;
 
     /**
      * Costruttore di un arco che collega un nodo di partenza a un nodo di arrivo e ne calcola il peso

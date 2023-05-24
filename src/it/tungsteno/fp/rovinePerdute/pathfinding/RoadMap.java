@@ -17,6 +17,7 @@ public class RoadMap {
     // indice -> lista di indici collegati
     private final Map<Integer, List<Integer>> citiesConnections;
     private List<List<Edge>> adjacencyList;
+    private final Node campoBase, rovinePerdute;
 
     /**
      * Costruttore della RoadMap
@@ -27,6 +28,8 @@ public class RoadMap {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
         this.adjacencyList = createAdjacencyList();
+        this.campoBase = findCampoBase();
+        this.rovinePerdute = findRovinePerdute();
     }
 
     /**
@@ -38,9 +41,10 @@ public class RoadMap {
         List<List<Edge>> adjacencyList = new ArrayList<>();
         for (int i = 0; i < cities.size(); i++) {
             List<Edge> edgeList = new LinkedList<>();
-            for (int j = 0; j < citiesConnections.get(i).size(); j++) {
-                edgeList.add(new Edge(getNodeById(i), getNodeById(citiesConnections.get(i).get(j))));
-            }
+            if (citiesConnections.get(i) != null)
+                for (int j = 0; j < citiesConnections.get(i).size(); j++) {
+                    edgeList.add(new Edge(getNodeById(i), getNodeById(citiesConnections.get(i).get(j))));
+                }
             adjacencyList.add(edgeList);
         }
 
@@ -60,7 +64,7 @@ public class RoadMap {
      * Un metodo che serve per trovare il nodo campo base all'interno della mappa
      * @return il nodo campo base
      */
-    private Node getCampoBase() {
+    private Node findCampoBase() {
         for (int id : cities.keySet()) {
             if (cities.get(id).getName().equalsIgnoreCase(BASE_CAMP_NAME))
                 return cities.get(id);
@@ -72,12 +76,20 @@ public class RoadMap {
      * Un metodo che serve per trovare le rovine perdute all'interno della mappa
      * @return il nodo delle rovine perdute
      */
-    public Node getRovinePerdute() {
+    private Node findRovinePerdute() {
         for (int id : cities.keySet()) {
             if (cities.get(id).getName().equalsIgnoreCase(LOST_RUINS_NAME))
                 return cities.get(id);
         }
         return null;
+    }
+
+    public Node getCampoBase() {
+        return campoBase;
+    }
+
+    public Node getRovinePerdute() {
+        return rovinePerdute;
     }
 
     public List<List<Edge>> getAdjacencyList() {
@@ -102,5 +114,9 @@ public class RoadMap {
     public List<Node> findShortestPathForMetztli() {
         adjacencyList = createAdjacencyList();
         return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), true);
+    }
+
+    public Map<Integer, Node> getCities() {
+        return cities;
     }
 }
