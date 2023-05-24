@@ -9,14 +9,16 @@ import javax.xml.stream.XMLStreamException;
 public class Main {
     public static void main(String[] args) throws XMLStreamException {
         RoadMap map = Reader.createRoadMapFromXML(Reader.getInputFilePath());
+        /*
         for (int key : map.getCities().keySet()) {
             System.out.println(map.getCities().get(key));
             System.out.println(map.getCitiesConnections().get(key));
         }
+         */
 
-       // System.out.println(map.findShortestPathForMetztli());
-       // System.out.println(map.findShortestPathForTonatiuh());
-        Writer.Output(map.findShortestPathForTonatiuh(), map.findShortestPathForMetztli(),
-                map.getGasTonatiuh(), map.getGasMetztli());
+        System.out.println(map.findShortestPathForMetztli());
+        System.out.println(map.findShortestPathForTonatiuh());
+        //Writer.Output(map.findShortestPathForTonatiuh(), map.findShortestPathForMetztli(),
+        //        map.getGasTonatiuh(), map.getGasMetztli());
     }
 }

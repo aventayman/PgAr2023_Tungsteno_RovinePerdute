@@ -16,27 +16,11 @@ public class RoadMap {
     private final Map<Integer, List<Integer>> citiesConnections;
     private List<List<Edge>> adjacencyList;
 
-    private double gasTonatiuh;
-
-    private double gasMetztli;
-
     public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections, int citiesAmount) {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
         this.adjacencyList = createAdjacencyList();
     }   
-
-    public Map<Integer, Node> getCities() {
-        return cities;
-    }
-
-    public Map<Integer, List<Integer>> getCitiesConnections() {
-        return citiesConnections;
-    }
-
-    public int getCitiesAmount() {
-        return cities.size();
-    }
 
     private List<List<Edge>> createAdjacencyList() {
         List<List<Edge>> adjacencyList = new ArrayList<>();
@@ -51,7 +35,7 @@ public class RoadMap {
         return adjacencyList;
     }
 
-    private Node getNodeById(int id) {
+    Node getNodeById(int id) {
         return cities.get(id);
     }
 
@@ -70,24 +54,16 @@ public class RoadMap {
         return null;
     }
 
-    public double getGasTonatiuh() {
-        return gasTonatiuh;
-    }
-
-    public double getGasMetztli() {
-        return gasMetztli;
-    }
-
     public List<List<Edge>> getAdjacencyList() {
         return adjacencyList;
     }
 
-    public Node[] findShortestPathForTonatiuh() {
+    public List<Node> findShortestPathForTonatiuh() {
         adjacencyList = createAdjacencyList();
-        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), false, gasTonatiuh);
+        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), false);
     }
-    public Node[] findShortestPathForMetztli() {
+    public List<Node> findShortestPathForMetztli() {
         adjacencyList = createAdjacencyList();
-        return ShortestPath.dijkstra(adjacencyList, getCampoBase(), getRovinePerdute(), true, gasMetztli);
+        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), true);
     }
 }

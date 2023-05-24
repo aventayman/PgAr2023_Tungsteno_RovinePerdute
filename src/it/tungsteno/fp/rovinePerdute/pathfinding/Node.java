@@ -5,7 +5,6 @@ package it.tungsteno.fp.rovinePerdute.pathfinding;
  * due coordinate, x e y, e un'altezza rispetto al suolo
  */
 public class Node {
-    private double minDistance;
     private final int id;
     private final String name;
     private final int xCoordinate;
@@ -18,14 +17,6 @@ public class Node {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.height = height;
-    }
-
-    public double getMinDistance() {
-        return minDistance;
-    }
-
-    public void setMinDistance(double minDistance) {
-        this.minDistance = minDistance;
     }
 
     public int getId() {
