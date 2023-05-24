@@ -11,6 +11,14 @@ public class Node {
     private final int yCoordinate;
     private final int height;
 
+    /**
+     * Il costruttore di ogni nodo
+     * @param id l'id univoco di ogni città
+     * @param name il nome della città
+     * @param xCoordinate la coordinata x della città
+     * @param yCoordinate la coordinata y della città
+     * @param height l'elevazione della città
+     */
     public Node(int id, String name, int xCoordinate, int yCoordinate, int height) {
         this.id = id;
         this.name = name;
@@ -43,7 +51,7 @@ public class Node {
     public String toString() {
         return "Node{" +
                 "id=" + id +
-                ", name='" + name +
+                ", name=" + name +
                 ", xCoordinate=" + xCoordinate +
                 ", yCoordinate=" + yCoordinate +
                 ", height=" + height +
