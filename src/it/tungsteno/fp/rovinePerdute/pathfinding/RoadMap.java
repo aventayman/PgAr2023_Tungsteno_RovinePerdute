@@ -52,7 +52,7 @@ public class RoadMap {
      * @param id id della città
      * @return il nodo corrispondente all'id
      */
-    Node getNodeById(int id) {
+    public Node getNodeById(int id) {
         return cities.get(id);
     }
 
@@ -72,7 +72,7 @@ public class RoadMap {
      * Un metodo che serve per trovare le rovine perdute all'interno della mappa
      * @return il nodo delle rovine perdute
      */
-    private Node getRovinePerdute() {
+    public Node getRovinePerdute() {
         for (int id : cities.keySet()) {
             if (cities.get(id).getName().equalsIgnoreCase(LOST_RUINS_NAME))
                 return cities.get(id);

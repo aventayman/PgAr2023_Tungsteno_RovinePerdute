@@ -8,7 +8,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.FileOutputStream;
 
 public class Writer {
-    public static void Output (Node[] TonatiuhNodeList, Node[] MetztliNodeList, double gasTonatiuh, double gasMetztli) throws XMLStreamException {
+    public static void output (Node[] TonatiuhNodeList, Node[] MetztliNodeList, double gasTonatiuh, double gasMetztli) throws XMLStreamException {
         //Inizializzazione
         XMLOutputFactory xmlOutputFactory;
         XMLStreamWriter xmlStreamWriter = null;

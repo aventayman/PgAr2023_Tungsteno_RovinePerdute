@@ -123,9 +123,11 @@ public class ShortestPath {
                     // Aggiungo l'id del nodo di arrivo come key e il nodo di partenza come value in previousNodeMap
                     previousNodeMap.put(edge.getDestinationNode().getId(), edge.getStartNode());
                     // Aggiorno la distanza migliore nel array dist
-                    dist[edge.getDestinationNode().getId()] = newDist;
+                    dist[edge.getDestinationNode().getId()] = newDist + distanceFactor(edge.getDestinationNode() , map.getRovinePerdute());
                     // Aggiungo o aggiorno la minima distanza finora trovata nella minDistanceMap
-                    minDistanceMap.put(edge.getDestinationNode().getId(), newDist);
+                    minDistanceMap.put(edge.getDestinationNode().getId(), newDist
+                            + distanceFactor(edge.getDestinationNode() , map.getRovinePerdute())
+                );
                     // Inserisco l'id della destinazione nella priority queue
                     priorityQueue.offer(edge.getDestinationNode().getId());
                 }
@@ -137,5 +139,9 @@ public class ShortestPath {
 
         // Il nodo di arrivo è irraggiungibile
         return Double.POSITIVE_INFINITY;
+    }
+    public static double distanceFactor(Node start , Node destination) {
+        return Math.sqrt(Math.pow(start.getxCoordinate() - destination.getxCoordinate(), 2) +
+                Math.pow(start.getyCoordinate() - destination.getyCoordinate(), 2));
     }
 }
