@@ -91,6 +91,8 @@ public class ShortestPath {
         previousNodeMap = new HashMap<>();
         distanceFromRuinsMap = new HashMap<>();
 
+        // Per ogni nodo inizializza distanceFromRuinsMap associando l'indice del nodo con la sua distanza
+        // in linea d'aria dalle rovine perdute
         for (Node node : map.getCities().values()) {
             distanceFromRuinsMap.put(node.getId(),
                     Math.sqrt(Math.pow(node.getxCoordinate() - map.getRovinePerdute().getxCoordinate(), 2) +

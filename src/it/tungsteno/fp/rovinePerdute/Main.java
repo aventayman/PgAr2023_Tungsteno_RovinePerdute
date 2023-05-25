@@ -2,9 +2,11 @@ package it.tungsteno.fp.rovinePerdute;
 
 import it.tungsteno.fp.rovinePerdute.parsing.Reader;
 import it.tungsteno.fp.rovinePerdute.parsing.Writer;
+import it.tungsteno.fp.rovinePerdute.pathfinding.Node;
 import it.tungsteno.fp.rovinePerdute.pathfinding.RoadMap;
 
 import javax.xml.stream.XMLStreamException;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws XMLStreamException {
@@ -16,9 +18,13 @@ public class Main {
         }
          */
 
+        List<Node> pathToniatuh = map.findShortestPathForTonatiuh();
+        List<Node> pathMetztli = map.findShortestPathForMetztli();
+
+        /*
         System.out.println(map.findShortestPathForMetztli());
         System.out.println(map.findShortestPathForTonatiuh());
-        //Writer.Output(map.findShortestPathForTonatiuh(), map.findShortestPathForMetztli(),
-        //        map.getGasTonatiuh(), map.getGasMetztli());
+         */
+        Writer.output(pathToniatuh, pathMetztli, map.getGasTonatiuh(pathToniatuh), map.getGasMetztli(pathMetztli));
     }
 }

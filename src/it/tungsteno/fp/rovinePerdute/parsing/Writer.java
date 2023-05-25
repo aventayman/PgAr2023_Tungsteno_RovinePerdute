@@ -6,34 +6,37 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.FileOutputStream;
+import java.util.List;
 
 public class Writer {
-    public static void output (Node[] TonatiuhNodeList, Node[] MetztliNodeList, double gasTonatiuh, double gasMetztli) throws XMLStreamException {
+    private static final String OUTPUT_PATH = "./OutputData/Routes.xml";
+    private static final String TONATIUH = "Tonatiuh";
+    private static final String METZTLI = "Metztli";
+
+    public static void output (List<Node> tonatiuhNodeList, List<Node> metztliNodeList, double gasTonatiuh, double gasMetztli) throws XMLStreamException {
         //Inizializzazione
         XMLOutputFactory xmlOutputFactory;
         XMLStreamWriter xmlStreamWriter = null;
 
-        //Percorso del file di output
-        String pathOutput = "./OutputData/Routes.xml";
 
         try {
             xmlOutputFactory = XMLOutputFactory.newInstance();
-            xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(new FileOutputStream(pathOutput), "utf-8");
+            xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(new FileOutputStream(OUTPUT_PATH), "utf-8");
             xmlStreamWriter.writeStartDocument("utf-8", "1.0");
         } catch (Exception e) {
             System.out.println("Errore nell'inizializzazione del writer:");
             System.out.println(e.getMessage());
         }
 
-        //try{
+        try{
             assert xmlStreamWriter != null;
             xmlStreamWriter.writeStartElement("routes");//Scrittura del tag dell'xml
             xmlStreamWriter.writeStartElement("route");
-            xmlStreamWriter.writeAttribute("team", "Tonatiuh");
+            xmlStreamWriter.writeAttribute("team", TONATIUH);
             xmlStreamWriter.writeAttribute("cost", Integer.toString((int) gasTonatiuh));
-            xmlStreamWriter.writeAttribute("cities", Integer.toString(TonatiuhNodeList.length));
+            xmlStreamWriter.writeAttribute("cities", Integer.toString(tonatiuhNodeList.size()));
 
-            for (Node node : TonatiuhNodeList) {
+            for (Node node : tonatiuhNodeList) {
                 xmlStreamWriter.writeStartElement("city");
                 xmlStreamWriter.writeAttribute("id", Integer.toString(node.getId()));
                 xmlStreamWriter.writeAttribute("name", node.getName());
@@ -43,11 +46,11 @@ public class Writer {
 
 
             xmlStreamWriter.writeStartElement("route");
-            xmlStreamWriter.writeAttribute("team", "Metztli");
+            xmlStreamWriter.writeAttribute("team", METZTLI);
             xmlStreamWriter.writeAttribute("cost", Integer.toString((int) gasMetztli));
-            xmlStreamWriter.writeAttribute("cities", Integer.toString(MetztliNodeList.length));
+            xmlStreamWriter.writeAttribute("cities", Integer.toString(metztliNodeList.size()));
 
-            for (Node node : MetztliNodeList) {
+            for (Node node : metztliNodeList) {
                 xmlStreamWriter.writeStartElement("city");
                 xmlStreamWriter.writeAttribute("id", Integer.toString(node.getId()));
                 xmlStreamWriter.writeAttribute("name", node.getName());
@@ -59,11 +62,9 @@ public class Writer {
             xmlStreamWriter.flush(); // svuota il buffer
             xmlStreamWriter.close(); // chiusura del documento e delle risorse impiegate
 
-        /*
         } catch (Exception e){
             System.out.println("Errore nella scrittura");
         }
 
-         */
     }
 }

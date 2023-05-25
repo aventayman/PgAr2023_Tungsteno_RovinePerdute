@@ -102,7 +102,7 @@ public class RoadMap {
      * @return la lista dei nodi che sono stati percorsi per andare dal nodo di partenza a quello di arrivo
      */
     public List<Node> findShortestPathForTonatiuh() {
-        adjacencyList = createAdjacencyList();
+        //adjacencyList = createAdjacencyList();
         return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), false);
     }
 
@@ -112,10 +112,26 @@ public class RoadMap {
      * @return la lista dei nodi che sono stati percorsi per andare dal nodo di partenza a quello di arrivo
      */
     public List<Node> findShortestPathForMetztli() {
-        adjacencyList = createAdjacencyList();
+        //adjacencyList = createAdjacencyList();
         return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), true);
     }
 
+    public double getGasTonatiuh (List<Node> nodeList) {
+        double gas = 0;
+        for (int i = 0; i < nodeList.size() - 1; i++) {
+            gas += Math.sqrt(Math.pow(nodeList.get(i).getxCoordinate() - nodeList.get(i + 1).getxCoordinate(), 2) +
+                    Math.pow(nodeList.get(i).getyCoordinate() - nodeList.get(i + 1).getyCoordinate(), 2));
+        }
+        return gas;
+    }
+
+    public double getGasMetztli (List<Node> nodeList) {
+        double gas = 0;
+        for (int i = 0; i < nodeList.size() - 1; i++) {
+            gas += Math.abs(nodeList.get(i).getHeight() - nodeList.get(i + 1).getHeight());
+        }
+        return gas;
+    }
     public Map<Integer, Node> getCities() {
         return cities;
     }
