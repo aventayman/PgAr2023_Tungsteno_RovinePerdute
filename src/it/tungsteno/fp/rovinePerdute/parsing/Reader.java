@@ -34,6 +34,7 @@ public class Reader {
         //lista dei file presenti nel file inputFolder, ovvero la cartella InputData
         File[] listOfFiles = inputFolder.listFiles();
 
+        assert listOfFiles != null;
         //se non ci sono file nella cartella, lancia un messaggio di errore e termina il programma
         if (listOfFiles.length == 0) throw new AssertionError(EMPTY_DIRECTORY_MESSAGE);
 
@@ -53,7 +54,7 @@ public class Reader {
         //Creo il menù con i nomi dei files
         Menu fileMenu = new Menu(MENU_HEADER, fileNames);
 
-        //Salvo il numero scelto dall'utente, corrispondente ad uno dei file
+        //Salvo il numero scelto dall'utente, corrispondente a uno dei file
         int choice = fileMenu.choose(true, false) - 1;
 
         return listOfFiles[choice].getPath();
@@ -61,7 +62,7 @@ public class Reader {
 
 
     /**
-     * Metodo che aggiunge ad una città un nuovo collegamento con un altra città, tramite indici
+     * Metodo che aggiunge a una città un nuovo collegamento con un altra città, tramite indici
      * @param startNode nodo a cui aggiungere il nodo di destinazione
      * @param destinationNode nodo di destinazione
      * @param nodeRoutesMap mappa in cui sono presenti i nodi collegati
@@ -79,7 +80,6 @@ public class Reader {
      * Metodo che crea un oggetto RoadMap leggendo il file XML fornito
      * @param xmlFilePath il path del file da leggere
      * @return un oggetto Roadmap con le città e i loro collegamenti
-     * @throws XMLStreamException
      */
     public static RoadMap createRoadMapFromXML(String xmlFilePath) throws XMLStreamException {
 

@@ -1,5 +1,7 @@
 package it.tungsteno.fp.rovinePerdute.pathfinding;
 
+import it.tungsteno.fp.rovinePerdute.teams.Team;
+
 import java.util.*;
 
 /**
@@ -14,9 +16,9 @@ public class RoadMap {
     // indice -> nodo
     private final Map<Integer, Node> cities;
 
-    // indice -> lista di indici collegati
+    // indice -> lista d'indici collegati
     private final Map<Integer, List<Integer>> citiesConnections;
-    private List<List<Edge>> adjacencyList;
+    private final List<List<Edge>> adjacencyList;
     private final Node campoBase, rovinePerdute;
 
     /**
@@ -101,34 +103,14 @@ public class RoadMap {
      * fra ogni nodo senza contare il dislivello
      * @return la lista dei nodi che sono stati percorsi per andare dal nodo di partenza a quello di arrivo
      */
-    public List<Node> findShortestPathForTonatiuh() {
-        //adjacencyList = createAdjacencyList();
-        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), false);
+    public List<Node> findShortestPath(Team team) {
+        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), team);
     }
 
-    /**
-     * Trova il percorso più breve dal campo base fino alle rovine perdute tenendo conto del dislivello fra ogni
-     * nodo, non tiene conto della distanza lineare fra i due punti
-     * @return la lista dei nodi che sono stati percorsi per andare dal nodo di partenza a quello di arrivo
-     */
-    public List<Node> findShortestPathForMetztli() {
-        //adjacencyList = createAdjacencyList();
-        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), true);
-    }
-
-    public double getGasTonatiuh (List<Node> nodeList) {
+    public static double getGas (List<Node> nodeList, Team team) {
         double gas = 0;
         for (int i = 0; i < nodeList.size() - 1; i++) {
-            gas += Math.sqrt(Math.pow(nodeList.get(i).getxCoordinate() - nodeList.get(i + 1).getxCoordinate(), 2) +
-                    Math.pow(nodeList.get(i).getyCoordinate() - nodeList.get(i + 1).getyCoordinate(), 2));
-        }
-        return gas;
-    }
-
-    public double getGasMetztli (List<Node> nodeList) {
-        double gas = 0;
-        for (int i = 0; i < nodeList.size() - 1; i++) {
-            gas += Math.abs(nodeList.get(i).getHeight() - nodeList.get(i + 1).getHeight());
+            gas += team.calculateNodeDistance(nodeList.get(i), nodeList.get(i + 1));
         }
         return gas;
     }

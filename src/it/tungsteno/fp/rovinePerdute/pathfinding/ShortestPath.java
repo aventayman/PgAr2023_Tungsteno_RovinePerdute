@@ -1,5 +1,7 @@
 package it.tungsteno.fp.rovinePerdute.pathfinding;
 
+import it.tungsteno.fp.rovinePerdute.teams.Team;
+
 import java.util.*;
 
 public class ShortestPath {
@@ -43,13 +45,12 @@ public class ShortestPath {
      * @param map la RoadMap su cui si vuole implementare l'algoritmo di ricerca
      * @param start il nodo di partenza
      * @param destination il nodo di arrivo
-     * @param withHeight se si vuole tenere conto solo del dislivello è true, altrimenti
-     *                   se si vuole tenere conto solo della distanza lineare è false
+     * @param team il team per il quale si vuole calcolare il miglior percorso
      * @return la lista dei nodi percorsi per raggiungere il nodo di arrivo
      */
-    public static List<Node> getShortestPath(RoadMap map, Node start, Node destination, boolean withHeight) {
+    public static List<Node> getShortestPath(RoadMap map, Node start, Node destination, Team team) {
         // Eseguo dijkstra e salvo la distanza in una variabile
-        double dist = dijkstra(map, start, destination, withHeight);
+        double dist = dijkstra(map, start, destination, team);
 
         // Inizializzo una nuova lista, che sarà quella dove viene immagazzinato il percorso
         List<Node> path = new ArrayList<>();
@@ -77,11 +78,10 @@ public class ShortestPath {
      * @param map la mappa su cui si vuole implementare l'algoritmo
      * @param start il nodo di partenza
      * @param destination il nodo di arrivo
-     * @param withHeight se si vuole tenere conto solo del dislivello è true, altrimenti
-     *                   se si vuole tenere conto solo della distanza lineare è false
+     * @param team il team per il quale si vuole calcolare il miglior percorso
      * @return la distanza minore dal nodo di partenza al nodo di arrivo
      */
-    private static double dijkstra(RoadMap map, Node start, Node destination, boolean withHeight) {
+    private static double dijkstra(RoadMap map, Node start, Node destination, Team team) {
         List<List<Edge>> adjacencyList = map.getAdjacencyList();
         int citiesAmount = adjacencyList.size();
 
@@ -133,13 +133,8 @@ public class ShortestPath {
                 // precedentemente visitato, quindi possiamo passare al successivo arco
                 if (visited[edge.getDestinationNode().getId()]) continue;
 
-                // Imposto la nuova distanza in base al costo che si vuole prendere in considerazione
-                double newDist;
-                if (withHeight) {
-                    newDist = dist[edge.getStartNode().getId()] + edge.getHeightCost();
-                } else {
-                    newDist = dist[edge.getStartNode().getId()] + edge.getLinearCost();
-                }
+                // Imposto la nuova distanza in base al modo in cui il team calcola il costo
+                double newDist = dist[edge.getStartNode().getId()] + edge.getCost(team);
 
                 // Se la nuova è minore rispetto alla migliore distanza che avevamo trovato precedentemente
                 // allora aggiorno entrambe le mappe

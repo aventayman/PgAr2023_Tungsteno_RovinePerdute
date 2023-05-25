@@ -1,8 +1,9 @@
 package it.tungsteno.fp.rovinePerdute.pathfinding;
 
+import it.tungsteno.fp.rovinePerdute.teams.Team;
+
 public class Edge {
     private final Node startNode, destinationNode;
-    private final double heightCost, linearCost;
 
     /**
      * Costruttore di un arco che collega un nodo di partenza a un nodo di arrivo e ne calcola il peso
@@ -13,9 +14,6 @@ public class Edge {
     public Edge(Node startNode, Node destinationNode) {
         this.startNode = startNode;
         this.destinationNode = destinationNode;
-        this.heightCost = Math.abs(startNode.getHeight() - destinationNode.getHeight());
-        this.linearCost = Math.sqrt(Math.pow(startNode.getxCoordinate() - destinationNode.getxCoordinate(), 2) +
-                Math.pow(startNode.getyCoordinate() - destinationNode.getyCoordinate(), 2));
     }
 
     public Node getStartNode() {
@@ -26,11 +24,7 @@ public class Edge {
         return destinationNode;
     }
 
-    public double getHeightCost() {
-        return heightCost;
-    }
-
-    public double getLinearCost() {
-        return linearCost;
+    public double getCost(Team team) {
+        return team.calculateNodeDistance(startNode, destinationNode);
     }
 }
