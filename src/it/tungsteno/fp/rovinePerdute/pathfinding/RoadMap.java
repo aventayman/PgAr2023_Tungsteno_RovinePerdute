@@ -18,7 +18,7 @@ public class RoadMap {
 
     // indice -> lista d'indici collegati
     private final Map<Integer, List<Integer>> citiesConnections;
-    private final List<List<Edge>> adjacencyList;
+    private final Map<Integer, List<Edge>> adjacencyMap;
     private final Node campoBase, rovinePerdute;
 
     /**
@@ -29,7 +29,7 @@ public class RoadMap {
     public RoadMap(Map<Integer, Node> cities, Map<Integer, List<Integer>> citiesConnections) {
         this.cities = cities;
         this.citiesConnections = citiesConnections;
-        this.adjacencyList = createAdjacencyList();
+        this.adjacencyMap = createAdjacencyMap();
         this.campoBase = findCampoBase();
         this.rovinePerdute = findRovinePerdute();
     }
@@ -39,15 +39,18 @@ public class RoadMap {
      * ha un indice, e alla posizione dell'id della città viene fornita una lista di edge.
      * @return la lista di adiacenza riferita alla mappa
      */
-    private List<List<Edge>> createAdjacencyList() {
-        List<List<Edge>> adjacencyList = new ArrayList<>();
+    private Map <Integer, List<Edge>> createAdjacencyMap() {
+        Map <Integer, List<Edge>> adjacencyList = new HashMap<>();
         for (int i = 0; i < cities.size(); i++) {
-            List<Edge> edgeList = new LinkedList<>();
-            if (citiesConnections.get(i) != null)
-                for (int j = 0; j < citiesConnections.get(i).size(); j++) {
+            List<Edge> edgeList = new ArrayList<>();
+            int roadsAmount;
+            if (citiesConnections.get(i) != null) {
+                roadsAmount = citiesConnections.get(i).size();
+                for (int j = 0; j < roadsAmount; j++) {
                     edgeList.add(new Edge(getNodeById(i), getNodeById(citiesConnections.get(i).get(j))));
                 }
-            adjacencyList.add(edgeList);
+            }
+            adjacencyList.put(i, edgeList);
         }
 
         return adjacencyList;
@@ -94,8 +97,12 @@ public class RoadMap {
         return rovinePerdute;
     }
 
-    public List<List<Edge>> getAdjacencyList() {
-        return adjacencyList;
+    public Map<Integer, List<Edge>> getAdjacencyMap() {
+        return adjacencyMap;
+    }
+
+    public Map<Integer, List<Integer>> getCitiesConnections() {
+        return citiesConnections;
     }
 
     /**
@@ -104,7 +111,8 @@ public class RoadMap {
      * @return la lista dei nodi che sono stati percorsi per andare dal nodo di partenza a quello di arrivo
      */
     public List<Node> findShortestPath(Team team) {
-        return ShortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), team);
+        ShortestPath shortestPath = new ShortestPath();
+        return shortestPath.getShortestPath(this, getCampoBase(), getRovinePerdute(), team);
     }
 
     public static double getGas (List<Node> nodeList, Team team) {

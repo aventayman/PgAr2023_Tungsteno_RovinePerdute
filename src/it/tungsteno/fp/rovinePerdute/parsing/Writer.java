@@ -2,13 +2,16 @@ package it.tungsteno.fp.rovinePerdute.parsing;
 
 import it.ayman.fp.lib.AnsiColors;
 import it.ayman.fp.lib.PrettyStrings;
+import it.tungsteno.fp.rovinePerdute.pathfinding.MultiThreader;
 import it.tungsteno.fp.rovinePerdute.pathfinding.Node;
 import it.tungsteno.fp.rovinePerdute.pathfinding.RoadMap;
 import it.tungsteno.fp.rovinePerdute.teams.Team;
 
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Writer {
@@ -43,13 +46,35 @@ public class Writer {
 
         try{
             assert xmlStreamWriter != null;
+
+            // Scrivo il tag di apertura del file
             xmlStreamWriter.writeStartElement(ROUTES);
 
-            for (Team team : teams) {
-                List<Node> teamPath = map.findShortestPath(team);
+            // Creo una lista di thread in base al numero di team che ho
+            List<MultiThreader> threaderList = new ArrayList<>(teams.length);
+
+            // Per ogni team aggiungo alla lista dei thread un nuovo thread
+            // con al suo interno la mappa e il team in questione
+            for (Team team : teams)
+                threaderList.add(new MultiThreader(map, team));
+
+            // Faccio partire tutti i thread, così cominciano tutti a calcolare
+            for (MultiThreader threader : threaderList) {
+                threader.start();
+            }
+
+            // Per ogni thread scrivo i dati che ho trovato nell' XML
+            for (MultiThreader threader : threaderList) {
+                // Prima di cominciare a scrivere i dati il thread in questione deve aver terminato
+                // altrimenti la nodeList sarebbe null, quindi attendiamo finché non abbia finito
+                // oppure se ha già finito possiamo andare avanti subito
+                threader.join();
+
+                List<Node> teamPath = threader.getNodeList();
+
                 xmlStreamWriter.writeStartElement(ROUTE);
-                xmlStreamWriter.writeAttribute(TEAM, team.name());
-                xmlStreamWriter.writeAttribute(COST, Integer.toString((int) RoadMap.getGas(teamPath, team)));
+                xmlStreamWriter.writeAttribute(TEAM, threader.getTeam().name());
+                xmlStreamWriter.writeAttribute(COST, Integer.toString((int) RoadMap.getGas(teamPath, threader.getTeam())));
                 xmlStreamWriter.writeAttribute(CITIES, Integer.toString(teamPath.size()));
 
                 for (Node node : teamPath) {
@@ -66,9 +91,10 @@ public class Writer {
             xmlStreamWriter.flush(); // svuota il buffer
             xmlStreamWriter.close(); // chiusura del documento e delle risorse impiegate
 
-        } catch (Exception e){
+        } catch (XMLStreamException e){
             System.out.println(WRITING_ERROR);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-
     }
 }

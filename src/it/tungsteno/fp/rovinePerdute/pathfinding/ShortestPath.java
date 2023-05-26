@@ -9,34 +9,37 @@ public class ShortestPath {
     private static final double EPS = 1e-6;
 
     // Mappa che associa a ogni indice di un nodo il nodo più conveniente finora trovato per raggiungerlo
-    private static Map<Integer, Node> previousNodeMap;
+    private final Map<Integer, Node> previousNodeMap = new HashMap<>();
 
     // Mappa che associa a ogni indice la minor distanza finora trovata per raggiungerlo
-    private static Map<Integer, Double> minDistanceMap;
+    private final Map<Integer, Double> minDistanceMap = new HashMap<>();
 
-    private static Map<Integer, Double> distanceFromRuinsMap;
+    // Mappa che associa a ogni indice la sua distanza dalle rovine perdute
+    private final Map<Integer, Double> distanceFromRuinsMap = new HashMap<>();
 
     /**
      * Comparatore necessario alla priorityQueue al fine di scegliere quale nodo scegliere per continuare
      * a implementare l'algoritmo, sceglierà sempre quello con il valore più basso tenendo però anche conto del fatto
      * che i nodi più vicini alle rovine perdute sono più promettenti
      */
-    private static final Comparator<Integer> comparatorAStar =
+    private final Comparator<Integer> comparatorAStar =
             (index1, index2) -> {
-                if (Math.abs((minDistanceMap.get(index1) + distanceFromRuinsMap.get(index1)) -
-                        (minDistanceMap.get(index2) + distanceFromRuinsMap.get(index2))) < EPS) return 0;
-                return ((minDistanceMap.get(index1) + distanceFromRuinsMap.get(index1)) -
-                        (minDistanceMap.get(index2) + distanceFromRuinsMap.get(index2))) > 0 ? +1 : -1;
+                double distance1 = minDistanceMap.get(index1) + distanceFromRuinsMap.get(index1);
+                double distance2 = minDistanceMap.get(index2) + distanceFromRuinsMap.get(index2);
+                if (Math.abs(distance1 - distance2) < EPS) return 0;
+                return (distance1 - distance2) > 0 ? +1 : -1;
             };
 
     /**
     * Comparatore necessario alla priorityQueue al fine di scegliere quale nodo scegliere per continuare
     * a implementare l'algoritmo, sceglierà sempre quello con il valore più basso, cioè il più promettente
     */
-    private static final Comparator<Integer> comparatorWithoutOptimization =
+    private final Comparator<Integer> comparatorWithoutOptimization =
             (index1, index2) -> {
-                if (Math.abs(minDistanceMap.get(index1) - minDistanceMap.get(index2)) < EPS) return 0;
-                return (minDistanceMap.get(index1) - minDistanceMap.get(index2)) > 0 ? +1 : -1;
+                double distance1 = minDistanceMap.get(index1);
+                double distance2 = minDistanceMap.get(index2);
+                if (Math.abs(distance1 - distance2) < EPS) return 0;
+                return (distance1 - distance2) > 0 ? +1 : -1;
             };
 
     /**
@@ -48,7 +51,7 @@ public class ShortestPath {
      * @param team il team per il quale si vuole calcolare il miglior percorso
      * @return la lista dei nodi percorsi per raggiungere il nodo di arrivo
      */
-    public static List<Node> getShortestPath(RoadMap map, Node start, Node destination, Team team) {
+    public List<Node> getShortestPath(RoadMap map, Node start, Node destination, Team team) {
         // Eseguo dijkstra e salvo la distanza in una variabile
         double dist = dijkstra(map, start, destination, team);
 
@@ -81,15 +84,9 @@ public class ShortestPath {
      * @param team il team per il quale si vuole calcolare il miglior percorso
      * @return la distanza minore dal nodo di partenza al nodo di arrivo
      */
-    private static double dijkstra(RoadMap map, Node start, Node destination, Team team) {
-        List<List<Edge>> adjacencyList = map.getAdjacencyList();
+    private double dijkstra(RoadMap map, Node start, Node destination, Team team) {
+        Map<Integer, List<Edge>> adjacencyList = map.getAdjacencyMap();
         int citiesAmount = adjacencyList.size();
-
-        // Inizializzazione delle mappe, in modo che ogni volta
-        // che l'algoritmo viene richiamato si abbiano delle nuove mappe
-        minDistanceMap = new HashMap<>();
-        previousNodeMap = new HashMap<>();
-        distanceFromRuinsMap = new HashMap<>();
 
         // Per ogni nodo inizializza distanceFromRuinsMap associando l'indice del nodo con la sua distanza
         // in linea d'aria dalle rovine perdute

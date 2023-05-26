@@ -104,45 +104,34 @@ public class Reader {
         //variabile che tiene conto dell'id del nodo in cui mi trovo, utile per tenere in memoria il nodo corrente
         int currentId = 0;
 
-        while (running){
-            //Controllo l'evento in cui mi trovo e agisco di conseguenza
-            switch(nodeXmlReader.getEventType()) {
-                case (XMLEvent.START_ELEMENT) -> {
-                    String tag = nodeXmlReader.getLocalName();
-                    switch (tag) {
-                        //Nel caso sia uno start element e un tag "city", creo la nuova città (nodo) con i dati forniti
-                        case ("city") -> {
-                            currentId = Integer.parseInt(nodeXmlReader.getAttributeValue(0));
-                            String name = nodeXmlReader.getAttributeValue(1);
-                            int xCoordinate = Integer.parseInt(nodeXmlReader.getAttributeValue(2));
-                            int yCoordinate = Integer.parseInt(nodeXmlReader.getAttributeValue(3));
-                            int height = Integer.parseInt(nodeXmlReader.getAttributeValue(4));
+        while (nodeXmlReader.hasNext()) {
+            nodeXmlReader.next();
+            //Salvo i dati solamente se si tratta di uno start element
+            if (nodeXmlReader.getEventType() == XMLEvent.START_ELEMENT) {
+                String tag = nodeXmlReader.getLocalName();
+                switch (tag) {
+                    //Nel caso sia uno start element e un tag "city", creo la nuova città (nodo) con i dati forniti
+                    case ("city") -> {
+                        currentId = Integer.parseInt(nodeXmlReader.getAttributeValue(0));
+                        String name = nodeXmlReader.getAttributeValue(1);
+                        int xCoordinate = Integer.parseInt(nodeXmlReader.getAttributeValue(2));
+                        int yCoordinate = Integer.parseInt(nodeXmlReader.getAttributeValue(3));
+                        int height = Integer.parseInt(nodeXmlReader.getAttributeValue(4));
 
-                            //Una volta creato il nuovo nodo, lo aggiungo alla nodesMap, assieme al suo id
-                            Node node = new Node(currentId, name, xCoordinate, yCoordinate, height);
-                            nodesMap.put(currentId, node);
-                        }
-                        //Nel caso sia uno start element con tag "link", devo aggiungere il collegamento al nodo
-                        //corrispondente al currentId
-                        case ("link") -> {
-                            //variabile che memorizza l'indice della destinazione (città) a cui è connesso il nodo con
-                            //il currentId
-                            int destinationNode = Integer.parseInt(nodeXmlReader.getAttributeValue(0));
-                            addEdge(currentId, destinationNode, nodeRoutesMap);
-                        }
+                        //Una volta creato il nuovo nodo, lo aggiungo alla nodesMap, assieme al suo id
+                        Node node = new Node(currentId, name, xCoordinate, yCoordinate, height);
+                        nodesMap.put(currentId, node);
                     }
-
-                }
-                //Se si tratta di un tag di chiusura
-                case (XMLEvent.END_ELEMENT) -> {
-                    //Se è il closing-tag del file, termina il parsing di lettura
-                    if (nodeXmlReader.getLocalName().equals("map"))
-                        running = false;
+                    //Nel caso sia uno start element con tag "link", devo aggiungere il collegamento al nodo
+                    //corrispondente al currentId
+                    case ("link") -> {
+                        //variabile che memorizza l'indice della destinazione (città) a cui è connesso il nodo con
+                        //il currentId
+                        int destinationNode = Integer.parseInt(nodeXmlReader.getAttributeValue(0));
+                        addEdge(currentId, destinationNode, nodeRoutesMap);
+                    }
                 }
             }
-            //Questa condizione per evitare un exception perché ci si trova alla fine del file
-            if (nodeXmlReader.hasNext())
-                nodeXmlReader.next();
         }
 
         return new RoadMap(nodesMap, nodeRoutesMap);
